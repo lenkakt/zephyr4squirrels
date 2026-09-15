@@ -14,7 +14,11 @@ with nothing to install on your own machine.
 
 ## Option A: GitHub Codespaces (recommended)
 
-Click this button on the repo's GitHub page:
+**Already in a Codespace?** (e.g. you got here via the button on the
+README) — you're done with this option already. Skip ahead to
+[Verify it works](#verify-it-works) below.
+
+Otherwise, click this button on the repo's GitHub page:
 
 [![Open in GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://codespaces.new/lenkakt/zephyr4squirrels)
 

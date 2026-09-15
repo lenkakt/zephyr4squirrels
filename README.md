@@ -12,8 +12,14 @@ experience assumed — just some C.
 
 [![Open in GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://codespaces.new/lenkakt/zephyr4squirrels)
 
-Click the button above (or clone the repo and read locally — everything
-here is plain Markdown) and work through these in order:
+**Not in a Codespace yet?** Click the button above — it opens one for you.
+Building it for the first time may take several minutes.
+
+**Already inside a Codespace, or reading this locally after cloning?**
+You're set — ignore the button and jump straight to the first section
+below.
+
+Work through these in order:
 
 1. [What is Zephyr?](docs/00-what-is-zephyr.md)
 2. [Install and set up Zephyr](docs/01-install.md)
