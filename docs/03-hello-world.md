@@ -31,6 +31,22 @@ your app). Run the same command again with nothing changed and it finishes
 almost instantly — Zephyr's build system only rebuilds what changed. If you
 switch board targets, add `-p` (pristine) to force a clean rebuild.
 
+## What is QEMU, exactly?
+
+QEMU is a general-purpose machine emulator: it doesn't just run code, it
+simulates an entire piece of hardware — the CPU, memory, flash, and
+peripherals — closely enough that real firmware, built exactly the same
+way as for a physical board, runs on it unmodified. The ESP32 uses a
+Xtensa CPU, completely different from the x86_64 or ARM CPU in your own
+laptop, so QEMU is doing genuine instruction-set translation under the
+hood, not just running your CPU's instructions directly.
+
+We use Espressif's own fork of QEMU (not the one bundled with the Zephyr
+SDK) specifically because it models the ESP32's real peripherals — its
+flash layout, boot ROM, and UART — accurately enough to boot the exact
+same image that would run on the physical M5Stack Fire, completely
+unmodified.
+
 ## Run it
 
 ```sh
@@ -71,6 +87,48 @@ That's three separate things booting, in order:
    reads the flash layout and jumps to your application.
 3. **Zephyr itself** (`*** Booting Zephyr OS ***`) — finally, your `main()`
    runs.
+
+## Why is this all just text?
+
+Notice there's no window, no graphics — just a stream of text in your
+terminal. That's not QEMU being minimal; that's genuinely what a
+microcontroller looks like. There's no display, no desktop, no windowing
+system anywhere in this picture. What almost every microcontroller does
+have is a **UART**: a simple serial data line, meant for exactly this — a
+basic, byte-at-a-time text link to another device.
+
+Zephyr's console and `printk()` both default to writing to this UART. On
+real hardware you'd connect a USB-to-serial adapter (or the board's
+built-in one) and open a terminal program to watch it. In QEMU, the
+`-nographic` flag in `run-qemu.sh` does the equivalent: instead of opening
+a separate emulated "serial port window," it routes the emulated UART's
+bytes straight into the terminal you're already sitting in. What you're
+looking at when you see `Hello, squirrels!` *is* serial port traffic — the
+same mechanism a real board uses — just piped to your own terminal instead
+of a physical cable.
+
+**A related note for later:** this isn't only about missing a GUI. Zephyr's
+C library itself is a small, embedded-focused one (picolibc by default) —
+not the full glibc/MSVCRT you're used to on Linux/Windows. Much of it works
+exactly as you'd expect — `<math.h>` functions like `sqrt()` or `sin()`
+compute correctly with no extra configuration — but things that assume a
+full operating system underneath don't: file I/O beyond what a device
+driver provides, `system()`, POSIX threads (Zephyr has its own thread API
+instead), and GUI toolkits are either missing entirely or need specific
+Kconfig options turned on.
+
+C++ is similar, one level further: `CONFIG_CPP=y` alone gives you a bare
+C++ language subset — no exceptions, no RTTI, and no standard library
+headers at all (`<vector>`, `<string>`, `<iostream>` simply don't exist).
+Turning on `CONFIG_GLIBCXX_LIBCPP=y` pulls in a real libstdc++, and
+containers like `std::vector` and `std::string` then work normally — but
+`<iostream>` (`std::cout`) still won't *link*, because it's built on POSIX
+file-descriptor functions (`open`, `read`, `write`...) that Zephyr doesn't
+provide by default. `printk()` has its own small version of this:
+floating-point values print as the literal text `*float*` unless you
+enable `CONFIG_CBPRINTF_FP_SUPPORT=y` — the math itself is always correct,
+only the formatting code is opt-in, to save flash space on boards where
+every kilobyte counts.
 
 Press `Ctrl+A` then `X` to quit QEMU.
 

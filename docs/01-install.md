@@ -135,6 +135,10 @@ west build -b m5stack_fire/esp32/procpu -d build apps/hello_world
 ./scripts/run-qemu.sh build 16
 ```
 
+That second command boots your build in **QEMU** — an emulator that
+simulates the ESP32 chip closely enough to run real firmware unmodified.
+More on what QEMU actually is in [Step 3](03-hello-world.md#what-is-qemu-exactly).
+
 You should see the ESP32 boot log, then:
 
 ```
