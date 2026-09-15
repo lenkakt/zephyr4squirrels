@@ -1,0 +1,26 @@
+// Copyright (c) 2026 Lenka Koskova Triskova <lenka@koskova.cz>
+//
+// SPDX-License-Identifier: Apache-2.0
+{
+	"name": "zephyr4squirrels",
+	"build": {
+		"dockerfile": "Dockerfile"
+	},
+	"remoteUser": "ubuntu",
+
+	// Keeps everyone comfortably inside GitHub Codespaces' monthly free
+	// quota (a bigger machine burns core-hours faster for the same wall
+	// time) — see plan.md's Codespaces research notes for the numbers.
+	"hostRequirements": {
+		"cpus": 2
+	},
+
+	"customizations": {
+		"vscode": {
+			"extensions": [
+				"ms-vscode.cpptools",
+				"ms-vscode.cmake-tools"
+			]
+		}
+	}
+}
