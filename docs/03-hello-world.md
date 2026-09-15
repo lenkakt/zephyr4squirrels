@@ -15,6 +15,7 @@ happened.
 ## Build it
 
 ```sh
+# repo root
 west build -b m5stack_fire/esp32/procpu -d build apps/hello_world
 ```
 
@@ -50,6 +51,7 @@ unmodified.
 ## Run it
 
 ```sh
+# repo root
 ./scripts/run-qemu.sh build 16
 ```
 
@@ -138,6 +140,7 @@ Open [apps/hello_world/src/main.c](../apps/hello_world/src/main.c), change
 the string in `printk(...)`, save, then rebuild and rerun:
 
 ```sh
+# repo root
 west build -b m5stack_fire/esp32/procpu -d build apps/hello_world
 ./scripts/run-qemu.sh build 16
 ```

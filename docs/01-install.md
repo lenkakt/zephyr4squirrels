@@ -59,23 +59,42 @@ sudo apt install --no-install-recommends git cmake ninja-build gperf \
 [Install dependencies](https://docs.zephyrproject.org/latest/develop/getting_started/index.html#install-dependencies)
 guide — the rest of these steps are the same everywhere.)
 
-### 2. Set up a Python environment and install west
+### 2. Clone this repo
 
 ```sh
-python3 -m venv ~/.venv
-source ~/.venv/bin/activate
+# ~
+git clone https://github.com/lenkakt/zephyr4squirrels ~/zephyr4squirrels
+cd ~/zephyr4squirrels
+```
+
+The rest of these steps assume you're inside this directory.
+
+### 3. Set up a Python environment and install west
+
+Kept inside the repo (`.venv`, already in `.gitignore`) rather than
+somewhere in your home directory, so it can't collide with a virtualenv
+from some other project:
+
+```sh
+# ~/zephyr4squirrels
+python3 -m venv .venv
+source .venv/bin/activate
 pip install west
 ```
 
-Remember to `source ~/.venv/bin/activate` again in every new terminal.
+Remember to `source .venv/bin/activate` again (from this directory) in
+every new terminal.
 
-### 3. Fetch Zephyr
+### 4. Fetch Zephyr
 
 ```sh
+# ~/zephyr4squirrels
 git clone --depth 1 --branch v4.4.2 https://github.com/zephyrproject-rtos/zephyr ~/zephyrproject/zephyr
 cd ~/zephyrproject/zephyr
+# ~/zephyrproject/zephyr
 west init -l --mf west.yml .
 cd ~/zephyrproject
+# ~/zephyrproject
 west update -o=--depth=1 -n
 west zephyr-export
 pip install -r zephyr/scripts/requirements.txt
@@ -85,10 +104,12 @@ west packages pip --install
 We pin to `v4.4.2` (not `main`) so the course doesn't shift under you
 mid-semester.
 
-### 4. Install the ESP32 toolchain
+### 5. Install the ESP32 toolchain
 
 ```sh
+# ~/zephyrproject
 cd ~/zephyrproject/zephyr
+# ~/zephyrproject/zephyr
 west sdk install --gnu-toolchains xtensa-espressif_esp32_zephyr-elf \
   --install-dir ~/zephyr-sdk
 ```
@@ -101,7 +122,7 @@ export ZEPHYR_BASE=~/zephyrproject/zephyr
 export ZEPHYR_SDK_INSTALL_DIR=~/zephyr-sdk
 ```
 
-### 5. Install Espressif's ESP32 QEMU fork
+### 6. Install Espressif's ESP32 QEMU fork
 
 We use Espressif's own QEMU fork, not the one bundled with the Zephyr SDK —
 it has much better ESP32 hardware fidelity.
@@ -118,19 +139,13 @@ export PATH="$HOME/espressif-qemu/bin:$PATH"
 `aarch64-apple-darwin` one from the same
 [release page](https://github.com/espressif/qemu/releases).)
 
-### 6. Clone this repo
-
-```sh
-git clone https://github.com/lenkakt/zephyr4squirrels ~/zephyr4squirrels
-cd ~/zephyr4squirrels
-```
-
 ## Verify it works
 
 From this repo's root (in your Codespace terminal, or locally with the
-environment variables from step 4 above still set):
+environment variables from step 5 above still set):
 
 ```sh
+# repo root — if you followed Option B, cd ~/zephyr4squirrels first
 west build -b m5stack_fire/esp32/procpu -d build apps/hello_world
 ./scripts/run-qemu.sh build 16
 ```

@@ -29,6 +29,7 @@ CONFIG_SHELL=y
 Rebuild and run as before:
 
 ```sh
+# repo root
 west build -b m5stack_fire/esp32/procpu -d build apps/hello_world
 ./scripts/run-qemu.sh build 16
 ```
