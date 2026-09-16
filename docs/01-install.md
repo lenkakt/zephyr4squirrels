@@ -42,6 +42,13 @@ WSL2), follow these steps. This mirrors exactly what the Codespaces image
 does under the hood — see [.devcontainer/Dockerfile](../.devcontainer/Dockerfile)
 if you want the literal source of truth.
 
+**Already have a Zephyr workspace set up** (e.g. from following the
+official [Getting Started Guide](https://docs.zephyrproject.org/latest/develop/getting_started/index.html)
+before, for some other project)? Reuse it: switch it to `v4.4.2`
+(`cd ~/zephyrproject/zephyr && git checkout v4.4.2`), then just make sure
+the ESP32 toolchain (step 4 below) and Espressif's QEMU fork (step 5) are
+installed there too. Otherwise, follow all six steps.
+
 ### 1. Install prerequisites
 
 On Ubuntu/Debian:
@@ -59,41 +66,35 @@ sudo apt install --no-install-recommends git cmake ninja-build gperf \
 [Install dependencies](https://docs.zephyrproject.org/latest/develop/getting_started/index.html#install-dependencies)
 guide — the rest of these steps are the same everywhere.)
 
-### 2. Clone this repo
+### 2. Set up a Python environment and install west
+
+We put `.venv` inside `~/zephyrproject`, not inside this course repo —
+matching the official Getting Started Guide's own convention, and because
+the venv belongs to the Zephyr workspace and its toolchain, not to any one
+app or course you happen to be building with it:
 
 ```sh
 # ~
-git clone https://github.com/lenkakt/zephyr4squirrels ~/zephyr4squirrels
-cd ~/zephyr4squirrels
-```
-
-The rest of these steps assume you're inside this directory.
-
-### 3. Set up a Python environment and install west
-
-Kept inside the repo (`.venv`, already in `.gitignore`) rather than
-somewhere in your home directory, so it can't collide with a virtualenv
-from some other project:
-
-```sh
-# ~/zephyr4squirrels
+mkdir -p ~/zephyrproject
+cd ~/zephyrproject
+# ~/zephyrproject
 python3 -m venv .venv
 source .venv/bin/activate
 pip install west
 ```
 
-Remember to `source .venv/bin/activate` again (from this directory) in
-every new terminal.
+Remember to `source ~/zephyrproject/.venv/bin/activate` again in every new
+terminal before doing any Zephyr development or testing.
 
-### 4. Fetch Zephyr
+### 3. Fetch Zephyr
 
 ```sh
-# ~/zephyr4squirrels
-git clone --depth 1 --branch v4.4.2 https://github.com/zephyrproject-rtos/zephyr ~/zephyrproject/zephyr
-cd ~/zephyrproject/zephyr
+# ~/zephyrproject
+git clone --depth 1 --branch v4.4.2 https://github.com/zephyrproject-rtos/zephyr zephyr
+cd zephyr
 # ~/zephyrproject/zephyr
 west init -l --mf west.yml .
-cd ~/zephyrproject
+cd ..
 # ~/zephyrproject
 west update -o=--depth=1 -n
 west zephyr-export
@@ -101,28 +102,28 @@ pip install -r zephyr/scripts/requirements.txt
 west packages pip --install
 ```
 
-We pin to `v4.4.2` (not `main`) so the course doesn't shift under you
-mid-semester.
+We pin to `v4.4.2` (not `main`) — this is the version we used when preparing this tutorial.
 
-### 5. Install the ESP32 toolchain
+### 4. Install the ESP32 toolchain
 
 ```sh
 # ~/zephyrproject
-cd ~/zephyrproject/zephyr
+cd zephyr
 # ~/zephyrproject/zephyr
 west sdk install --gnu-toolchains xtensa-espressif_esp32_zephyr-elf \
   --install-dir ~/zephyr-sdk
 ```
 
-Set these environment variables in every new terminal (or add them to your
-shell's startup file):
+Set these environment variables in every new terminal (and consider also
+adding these definitions to your shell setup file — such as `.bashrc` in
+your home directory):
 
 ```sh
 export ZEPHYR_BASE=~/zephyrproject/zephyr
 export ZEPHYR_SDK_INSTALL_DIR=~/zephyr-sdk
 ```
 
-### 6. Install Espressif's ESP32 QEMU fork
+### 5. Install Espressif's ESP32 QEMU fork
 
 We use Espressif's own QEMU fork, not the one bundled with the Zephyr SDK —
 it has much better ESP32 hardware fidelity.
@@ -139,15 +140,24 @@ export PATH="$HOME/espressif-qemu/bin:$PATH"
 `aarch64-apple-darwin` one from the same
 [release page](https://github.com/espressif/qemu/releases).)
 
-## Verify it works
-
-From this repo's root (in your Codespace terminal, or locally with the
-environment variables from step 5 above still set):
+### 6. Clone this repo
 
 ```sh
-# repo root — if you followed Option B, cd ~/zephyr4squirrels first
+# ~
+git clone https://github.com/lenkakt/zephyr4squirrels ~/zephyr4squirrels
+cd ~/zephyr4squirrels
+```
+
+## Verify it works
+
+From this repo's root (in your Codespace terminal, or locally — you should
+already be here after step 6, with the venv from step 2 active and the
+environment variables from step 4 still set):
+
+```sh
+# zephyr4squirrels
 west build -b m5stack_fire/esp32/procpu -d build apps/hello_world
-./scripts/run-qemu.sh build 16
+./scripts/run-qemu.sh
 ```
 
 That second command boots your build in **QEMU** — an emulator that

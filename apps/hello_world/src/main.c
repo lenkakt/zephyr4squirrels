@@ -1,18 +1,16 @@
-/*
- * Copyright (c) 2026 Lenka Koskova Triskova <lenka@koskova.cz>
- *
- * SPDX-License-Identifier: Apache-2.0
- */
-
-/*
- * hello_world
- *
- * The smallest possible Zephyr application. It boots the kernel,
- * runs main(), prints one line, and returns.
- */
-
 #include <zephyr/kernel.h>
+#include <zephyr/shell/shell.h>
 
+static int cmd_squirrel(const struct shell *sh, size_t argc, char **argv)
+{
+  ARG_UNUSED(argc);
+  ARG_UNUSED(argv);
+
+  shell_print(sh, "A squirrel appears and steals your bandwidth.");
+  return 0;
+}
+
+SHELL_CMD_REGISTER(squirrel, NULL, "Summon a squirrel.", cmd_squirrel);
 int main(void)
 {
 	printk("Hello, squirrels! Zephyr is alive.\n");
