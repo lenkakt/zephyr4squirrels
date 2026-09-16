@@ -155,4 +155,4 @@ threads (`shell_uart`, `sysworkq`, `idle`, ...) behind.
   did from the shell what `repeat_count` did automatically a moment ago.
 
 ---
-Next → [7. zbus](07-zbus.md)
+Next → [7. Synchronization: locks](07-synchronization.md)
