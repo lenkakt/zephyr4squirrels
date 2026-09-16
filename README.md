@@ -34,6 +34,8 @@ Work through these in order:
 5. [The Zephyr shell](docs/04-shell.md)
 6. [Threads, basics](docs/05-threads-basics.md)
 7. [Threads, extended](docs/06-threads-extended.md)
+8. [Synchronization: locks](docs/07-synchronization.md)
+9. [zbus](docs/08-zbus.md)
 
 No physical hardware is required — everything runs in an emulator (QEMU),
 targeting the same chip (ESP32) as the course's real board, an
