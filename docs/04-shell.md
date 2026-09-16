@@ -124,6 +124,29 @@ A squirrel appears and steals your bandwidth.
 and the function to call. The function receives `argc`/`argv` like a
 regular `main()`, if your command needs arguments.
 
+## `SHELL_CMD_REGISTER` is a macro, not a function
+
+Notice `SHELL_CMD_REGISTER(...)` isn't called from inside `main()` or any
+function — it sits at file scope, on its own. That's because it's a
+**macro**, not a function call: it expands, at compile time, into a small
+static data structure (holding your command's name, help text, and a
+pointer to `cmd_squirrel`) placed somewhere the shell subsystem knows to
+look for it at boot. There's no central "list of commands" you have to
+maintain by hand anywhere — every `SHELL_CMD_REGISTER` anywhere in the
+build contributes one entry, automatically.
+
+This is a pattern worth recognizing, because Zephyr uses it constantly, far
+beyond the shell: you give it a name, a small piece of your own code (a
+callback function), and a few parameters — and a macro does the wiring
+that would otherwise be repetitive boilerplate. `K_THREAD_DEFINE(...)`
+declares and starts a thread the same way; `SYS_INIT(...)` registers a
+function to run automatically during boot, at a priority you choose;
+device drivers register themselves with a similar macro so the kernel
+finds them without any of your own code calling into a central registry.
+Once you recognize "name + callback + a few parameters, wrapped in a
+macro" as a shape, a lot of unfamiliar corners of the Zephyr API stop
+looking unfamiliar.
+
 ## Try it yourself
 
 - Make `squirrel` take an argument (check `argv[1]` when `argc > 1`) and
@@ -135,8 +158,4 @@ regular `main()`, if your command needs arguments.
   change any thread's own stack usage? (It shouldn't — think about why.)
 
 ---
-
-That's the four stages. From here, the official
-[Zephyr documentation](https://docs.zephyrproject.org/latest/) and the
-samples under the Zephyr workspace's `zephyr/samples/` directory (see
-[Step 2](02-directories.md)) are the natural next places to explore.
+Next → [5. Threads, basics](05-threads-basics.md)
