@@ -36,6 +36,7 @@ Work through these in order:
 7. [Threads, extended](docs/06-threads-extended.md)
 8. [Synchronization: locks](docs/07-synchronization.md)
 9. [zbus](docs/08-zbus.md)
+10. [Devicetree](docs/09-devicetree.md)
 
 No physical hardware is required — everything runs in an emulator (QEMU),
 targeting the same chip (ESP32) as the course's real board, an

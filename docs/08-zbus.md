@@ -181,11 +181,10 @@ fits what the receiver needs to do with the data.
   `chan` against each channel's address to know which one you're looking
   at.
 
----
+Beyond this step, the official
+[zbus documentation](https://docs.zephyrproject.org/latest/services/zbus/index.html)
+and `samples/subsys/zbus/` under the Zephyr workspace (see
+[Step 2](02-directories.md)) go further than this introduction does.
 
-This closes out the introduction. From here: the official
-[Zephyr documentation](https://docs.zephyrproject.org/latest/) and the
-samples under the Zephyr workspace's `zephyr/samples/` directory (see
-[Step 2](02-directories.md)) are the natural next places to explore —
-`samples/subsys/zbus/` in particular picks up right where this step left
-off.
+---
+Next → [9. Devicetree](09-devicetree.md)
