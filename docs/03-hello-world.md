@@ -30,7 +30,7 @@ west build -b m5stack_fire/esp32/procpu -d build apps/hello_world
 The first build takes a minute or two (it compiles the kernel too, not just
 your app). Run the same command again with nothing changed and it finishes
 almost instantly — Zephyr's build system only rebuilds what changed. If you
-switch board targets, add `-p` (pristine) to force a clean rebuild.
+switch board targets, add `-p always` (pristine) to force a clean rebuild.
 
 ## What is QEMU, exactly?
 
