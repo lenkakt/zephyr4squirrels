@@ -150,4 +150,4 @@ you'll repeat constantly from here on — everything else in this course is
 built on top of it.
 
 ---
-Next → [4. The Zephyr shell](04-shell.md)
+Next → [4. West, the Zephyr meta-tool](04-west.md)

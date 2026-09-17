@@ -31,12 +31,13 @@ Work through these in order:
 2. [Install and set up Zephyr](docs/01-install.md)
 3. [Important directories](docs/02-directories.md)
 4. [Hello World in QEMU](docs/03-hello-world.md)
-5. [The Zephyr shell](docs/04-shell.md)
-6. [Threads, basics](docs/05-threads-basics.md)
-7. [Threads, extended](docs/06-threads-extended.md)
-8. [Synchronization: locks](docs/07-synchronization.md)
-9. [zbus](docs/08-zbus.md)
-10. [Devicetree](docs/09-devicetree.md)
+5. [West, the Zephyr meta-tool](docs/04-west.md)
+6. [The Zephyr shell](docs/05-shell.md)
+7. [Threads, basics](docs/06-threads-basics.md)
+8. [Threads, extended](docs/07-threads-extended.md)
+9. [Synchronization: locks](docs/08-synchronization.md)
+10. [zbus](docs/09-zbus.md)
+11. [Devicetree](docs/10-devicetree.md)
 
 No physical hardware is required — everything runs in an emulator (QEMU),
 targeting the same chip (ESP32) as the course's real board, an
