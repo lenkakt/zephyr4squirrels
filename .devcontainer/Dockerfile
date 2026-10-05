@@ -14,9 +14,12 @@ ENV DEBIAN_FRONTEND=noninteractive
 RUN apt-get update && apt-get install -y --no-install-recommends \
 	git cmake ninja-build gperf ccache dfu-util device-tree-compiler wget \
 	python3-dev python3-pip python3-venv python3-setuptools python3-tk python3-wheel \
-	xz-utils file make gcc g++ gcc-multilib g++-multilib libsdl2-dev libmagic1 \
+	xz-utils file make gcc g++ libsdl2-dev libmagic1 \
 	curl ca-certificates sudo \
 	libpixman-1-0 libslirp0 \
+	&& if [ "$(dpkg --print-architecture)" = amd64 ]; then \
+		apt-get install -y --no-install-recommends gcc-multilib g++-multilib; \
+	fi \
 	&& rm -rf /var/lib/apt/lists/*
 
 # ubuntu:24.04 already ships a "ubuntu" user at uid 1000 (matches the uid
@@ -60,10 +63,18 @@ RUN cd /home/ubuntu/zephyrproject/zephyr \
 # fork with better ESP32 hardware fidelity, which is what actually lets us
 # boot Zephyr on an emulated ESP32. See https://github.com/espressif/qemu
 ARG ESP_QEMU_RELEASE=esp-develop-9.2.2-20260417
-ARG ESP_QEMU_ASSET=qemu-xtensa-softmmu-esp_develop_9.2.2_20260417-x86_64-linux-gnu.tar.xz
-RUN mkdir -p /home/ubuntu/espressif-qemu \
+ARG TARGETARCH
+RUN case "${TARGETARCH}" in \
+		amd64) qemu_arch=x86_64 ;; \
+		arm64) qemu_arch=aarch64 ;; \
+		*) echo "Unsupported container architecture: ${TARGETARCH}" >&2; exit 1 ;; \
+	esac \
+	&& qemu_version="${ESP_QEMU_RELEASE#esp-develop-}" \
+	&& qemu_version="$(printf '%s' "${qemu_version}" | tr '-' '_')" \
+	&& qemu_asset="qemu-xtensa-softmmu-esp_develop_${qemu_version}-${qemu_arch}-linux-gnu.tar.xz" \
+	&& mkdir -p /home/ubuntu/espressif-qemu \
 	&& wget -q -O /tmp/esp-qemu.tar.xz \
-	"https://github.com/espressif/qemu/releases/download/${ESP_QEMU_RELEASE}/${ESP_QEMU_ASSET}" \
+	"https://github.com/espressif/qemu/releases/download/${ESP_QEMU_RELEASE}/${qemu_asset}" \
 	&& tar -xJf /tmp/esp-qemu.tar.xz -C /home/ubuntu/espressif-qemu --strip-components=1 \
 	&& rm /tmp/esp-qemu.tar.xz
 ENV PATH="/home/ubuntu/espressif-qemu/bin:${PATH}"
